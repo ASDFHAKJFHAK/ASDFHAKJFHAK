@@ -1,0 +1,85 @@
+package com.company;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int first = (int) (Math.random() * 2); //Определеяет кто ходит первый
+        int ii = (int) (Math.random() * 2); //Определяет будет ли ИИ умным
+        int stones = (int) (Math.random() * 100) + 1; //Определяет количество камней
+        int player = 0; //Нужно для считывания сколько шариков игрок убирает
+        int boolsII = 0; //Кол-во шариков которыми сыграл ИИ
+        if(ii == 1)
+            System.out.println("Против вас умный компьютер");
+        else
+            System.out.println("ПРотив вас тупой компьютер");
+
+        if (first == 1) { //Определеяет кто ходит первый
+            System.out.println("Компьютер ходит первый");
+            while (stones > 0) {
+                boolsII = computII(ii, stones);//Вызывает метод чтто бы определить сколько камней ИИ заберет
+                System.out.println("Компьютер сделал минус " + boolsII);
+                stones -= boolsII; //вычитание вытянутых камней
+                if (stones == 1) {
+                    System.out.println("Вы проиграли");
+                    break;
+                }
+
+                System.out.println("Сейчас " + stones + " шариков, вы " +
+                        "можете ввести максимум половину шариков");
+                player = scanner.nextInt(); //Игрок забирает камни
+                while ((stones / 2) < player) { //Если он взял неправильное количество камней то ему надо переиграть ход
+                    System.out.println("Вы пвзяли много шариков");
+                    player = scanner.nextInt();
+                }
+                stones -= player; //вычитание вытянутых камней
+                if (stones == 1) {
+                    System.out.println("Поздравляю, вы ыыйграли ");
+                    break;
+                }
+            }
+        }
+        else {
+            System.out.println("Вы ходите первым");
+            while (stones > 0) {
+                System.out.println("Сейчас " + stones + " шариков, вы " +
+                        "можете ввести максимум половину шариков");
+                player = scanner.nextInt(); //Игрок забирает камни
+                while (stones / 2 < player) {//Если он взял неправильное количество камней то ему надо переиграть ход
+                    System.out.println("Вы пвзяли много шариков");
+                    player = scanner.nextInt();
+                }
+                stones -= player; // вычитание камней
+                if (stones == 1) {
+                    System.out.println("Поздравляю, вы выйграли");
+                    break;
+                }
+
+                boolsII = computII(ii, stones); //Вызывает метод чтто бы определить сколько камней ИИ заберет
+                System.out.println("Компьютер сделал минус " + boolsII);
+                stones -= boolsII; //Вычитание камней
+                if (stones == 1) {
+                    System.out.println("Вы проиграли");
+                    break;
+                }
+            }
+        }
+    }
+
+    public static int computII(int ii, int stones){ //Метод
+        int stonesII = 100; //Максимальное количество камней
+        if(ii == 1) { //Опеределяет будет ли ИИ умным
+            for (int i = 5; i >= 1; i--) { //Нудно для того что бы он перебрал все степени
+                if (stones / 2 < stonesII) { //Нужно что бы ИИ не нарушал правила
+                    stonesII = (int) Math.pow(2, i) - 1; //Мат. вычисления число два возводиться в степень и от результата отнимают единицу
+                } else
+                    break; //Если условие неудов. то он прирывает цикл, т.к. дальнийшие вычисления бесполезны
+            }
+        }
+        else { //Случайным образом определяет какое кол-во камней вытянуть
+            stonesII = (int) (Math.random() * ((stones / 2) - 1)) + 1;
+        }
+        return stonesII; //Передает полученное число
+    }
+}
